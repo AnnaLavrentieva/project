@@ -29,6 +29,4 @@ public class Item extends Ware {
     @JoinColumn(name = "invoice_id")
     private Invoice invoice;
 
-    public Item() {
-    }
 }

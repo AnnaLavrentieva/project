@@ -23,7 +23,7 @@ public class PersonController {
         this.personService = personService;
     }
 
-    @GetMapping
+    @GetMapping("/home")
     public String home() {
         return "home";
     }

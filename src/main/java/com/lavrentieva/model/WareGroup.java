@@ -15,13 +15,14 @@ import java.util.Set;
 @Setter
 @ToString
 public class WareGroup {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "group_id")
-    private String id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(name = "group_id")
+//    private String id;
 
-    @Column(name = "group_name")
+    @Id
+    @Column(name = "group_id")
     private String name;
 
     @OneToMany(mappedBy = "wareGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
@@ -29,6 +30,7 @@ public class WareGroup {
     @ToString.Exclude
     private Set<Ware> wares = new LinkedHashSet<>();
 
-    public WareGroup() {
+    public void setWares (final Set<Ware> wares){
+        wares.forEach(ware -> ware.setWareGroup(this));
     }
 }

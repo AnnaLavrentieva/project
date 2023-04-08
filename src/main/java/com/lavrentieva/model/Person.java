@@ -17,18 +17,20 @@ import java.util.Set;
 @ToString
 public class Person  {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "person_id")
-    private String id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
+//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
+//    @Column(name = "person_id")
+//    private String id;
 
-    @Column(name = "person_name")
+    @Id
+    @Column(name = "person_id")
     private String name;
 
     private String password;
 
-    private String role;
+    @Enumerated(EnumType.STRING)
+    private PersonRole role;
 
     @OneToMany(mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
@@ -38,7 +40,17 @@ public class Person  {
     @OneToMany(mappedBy = "person", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<WareMovementRecorder> recorders = new LinkedHashSet<>();
+    private Set<WareMovementRecord> records = new LinkedHashSet<>();
+
+    public void setWares (final Set<Ware> wares){
+        wares.forEach(ware -> ware.setPerson(this));
+    }
+
+    public void setRecords (final Set<WareMovementRecord> records){
+        records.forEach(record -> record.setPerson(this));
+    }
+
+
 
 //    @Override
 //    public Collection<? extends GrantedAuthority> getAuthorities() {

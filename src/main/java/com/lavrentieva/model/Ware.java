@@ -52,8 +52,9 @@ public abstract class Ware {
     @OneToMany(mappedBy = "ware", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<WareMovementRecorder> recorders = new LinkedHashSet<>();
+    private Set<WareMovementRecord> records = new LinkedHashSet<>();
 
-    public Ware() {
+    public void setRecords (final Set<WareMovementRecord> records){
+        records.forEach(record -> record.setWare(this));
     }
 }

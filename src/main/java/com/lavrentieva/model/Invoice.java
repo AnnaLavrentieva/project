@@ -42,4 +42,8 @@ import java.util.Set;
         @ToString.Exclude
         private Set<Item> items = new LinkedHashSet<>();
 
+        public void setItems (final Set<Item> items){
+            items.forEach(item -> item.setInvoice(this));
+        }
+
     }

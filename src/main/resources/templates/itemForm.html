@@ -1,16 +1,82 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
 <head>
-<!--    <meta charset="utf-8">-->
-<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Item form</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
-<!--    <link rel="preconnect" href="https://fonts.googleapis.com">-->
-<!--    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>-->
-<!--    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">-->
-<!--    <link rel="stylesheet" href="main.css">-->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="main.css">
 </head>
 <body>
 <div id="menu" th:insert="menu :: menu_fragment"></div>
-<div class=
+
+<div class="container">
+    <br>
+    <h4>Item Form</h4>
+    <form class="row g-3" th:action="@{/item}" th:object="${item}" method="post">
+        <div class="col-md-4">
+            <label for="inputName" class="form-label">Name</label>
+            <input type="text" class="form-control" id="inputName" th:field="*{name}">
+        </div>
+        <br>
+        <div class="col-md-3">
+            <label for="inputSerialNumber" class="form-label">Serial Number</label>
+            <input type="text" class="form-control" id="inputSerialNumber" th:field="*{serialNumber}">
+        </div>
+        <div class="col-md-3">
+            <label for="inputInventoryNumber" class="form-label">Inventory Number</label>
+            <input type="text" class="form-control" id="inputInventoryNumber" th:field="*{inventoryNumber}">
+        </div>
+        <div class="col-md-2">
+            <label for="inputProductionYear" class="form-label">Production Year</label>
+            <input type="number" class="form-control" id="inputProductionYear" th:field="*{productionYear}">
+        </div>
+        <div class="col-md-2">
+            <label for="inputDeploymentDate" class="form-label">Deployment Date</label>
+            <input type="date" class="form-control" id="inputDeploymentDate" th:field="*{deploymentDate}">
+        </div>
+        <div class="col-md-2">
+            <label for="inputAmount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="inputAmount" th:field="*{amount}">
+        </div>
+        <div class="col-md-2">
+            <label for="inputPrice" class="form-label">Price</label>
+            <input type="number" class="form-control" id="inputPrice" th:field="*{price}" step="0.01">
+        </div>
+        <div class="col-md-4">
+            <label for="inputWareGroup" class="form-label">Ware Group</label>
+            <select class="form-select" id="inputWareGroup" aria-label="Ware Group select"
+                    th:field="*{wareGroup}">
+                <option th:each="wareGroup : ${wareGroups}"
+                        th:value="${wareGroup.name}"
+                        th:text="${wareGroup.name}">
+                </option>
+                <!--            text - текст на стороні клієнта,-->
+                <!--            value - те що відправиться на сервер-->
+            </select>
+        </div>
+        <div class="col-md-4">
+            <label for="inputPerson" class="form-label">Responsible Person</label>
+            <input type="text" class="form-control" id="inputPerson"
+                   th:field="*{person}" th:value="${item.person.name}">
+        </div>
+        <div class="col-md-4">
+            <label for="inputWarehouse" class="form-label">Warehouse</label>
+            <input type="text" class="form-control" id="inputWarehouse"
+                   th:field="*{warehouse}" th:value="${item.warehouse.name}">
+        </div>
+
+        <br><div class="col">
+            <button type="button" class="btn btn-outline-primary">Submit</button>
+        </div>
+    </form>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,24 +1,38 @@
 package com.lavrentieva.service;
 
 import com.lavrentieva.model.Item;
+import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.repository.ItemRepository;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
 
+    private final PersonService personService;
+    private final WarehouseService warehouseService;
+
     private static final Set<Item> CACHE = new HashSet<>();
 
     @Autowired
-    public ItemService(final ItemRepository itemRepository) {
+    public ItemService(final ItemRepository itemRepository, PersonService personService,
+                       WarehouseService warehouseService) {
         this.itemRepository = itemRepository;
+        this.personService=personService;
+        this.warehouseService=warehouseService;
+    }
+
+    @SneakyThrows
+    public Item createForInputForm (){
+        final Item item = new Item();
+        item.setPerson(personService.getById("Slava Ukraine"));
+        item.setWarehouse(warehouseService.getById("Main"));
+        return item;
     }
 
     public Iterable<Item> getAll() {

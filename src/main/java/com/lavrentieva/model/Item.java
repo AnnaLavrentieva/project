@@ -14,10 +14,10 @@ import javax.persistence.*;
 public class Item extends Ware {
 
     @Column(name = "serial_number")
-    private String serialNumber;
+    private String serialNumber; //заводський номер, може не бути
 
     @Column(name = "inventory_number")
-    private String inventoryNumber;
+    private String inventoryNumber; //номенклатурний номер, може бути однаковим для кількох товарів
 
     @Column(name = "production_year")
     private int productionYear;

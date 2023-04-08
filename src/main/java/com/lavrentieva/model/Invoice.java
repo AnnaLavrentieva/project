@@ -29,10 +29,6 @@ import java.util.Set;
         @Temporal(TemporalType.DATE)
         private Date invoiceDate;
 
-        @Column(name = "posting_date")
-        @Temporal(TemporalType.DATE)
-        private Date postingDate;
-
         @Column(name = "invoice_type")
         @Enumerated(EnumType.STRING)
         private InvoiceType invoiceType;

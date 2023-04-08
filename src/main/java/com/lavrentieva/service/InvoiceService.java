@@ -17,8 +17,6 @@ import java.util.Set;
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
 
-
-
     @Autowired
     public InvoiceService(InvoiceRepository invoiceRepository) {
         this.invoiceRepository = invoiceRepository;

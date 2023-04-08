@@ -2,8 +2,10 @@ package com.lavrentieva.controller;
 
 //import com.lavrentieva.dto.PriceUpdate;
 import com.lavrentieva.model.Item;
+import com.lavrentieva.model.WareGroup;
 import com.lavrentieva.service.ItemService;
 import com.lavrentieva.service.PersonService;
+import com.lavrentieva.service.WareGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -18,28 +20,27 @@ import java.util.Optional;
 @RequestMapping("/item")
 public class ItemController {
     private final ItemService itemService;
-    private final PersonService personService;
+    private final WareGroupService wareGroupService;
 
     @Autowired
-    public ItemController(ItemService itemService, PersonService personService) {
+    public ItemController(ItemService itemService, WareGroupService wareGroupService) {
         this.itemService = itemService;
-        this.personService = personService;
+        this.wareGroupService=wareGroupService;
     }
     @GetMapping
     public ModelAndView showItemForm (ModelAndView modelAndView){
-        final Item item = new Item();
-        item.setAmount(1);
-        item.setDeploymentDate(new Date());
-        item.setPerson(personService.getById("5f9ab1f3-ce63-4412-a0a1-83cb962bce73"));
+        final Item item = itemService.createForInputForm();
+        final Iterable<WareGroup> wareGroups = wareGroupService.getAll();
         modelAndView.addObject("item",item);
+        modelAndView.addObject("wareGroups",wareGroups);
         modelAndView.setViewName("itemForm");
         return modelAndView;
     }
 
     @PostMapping
-    public ModelAndView addItemToCache (@ModelAttribute ("item") Item item) {
+    public ModelAndView addItemToCache (@ModelAttribute ("item") Item item, ModelAndView modelAndView) {
         itemService.addToCache(item);
-        ModelAndView modelAndView = new ModelAndView("redirect:/item");
+        modelAndView.setViewName("redirect:/item");
         return modelAndView;
     }
 //

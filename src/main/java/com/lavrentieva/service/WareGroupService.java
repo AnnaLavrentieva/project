@@ -6,6 +6,7 @@ import com.lavrentieva.repository.WarehouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -19,5 +20,9 @@ public class WareGroupService {
 
     public Iterable<WareGroup> getAll(){
         return wareGroupRepository.findAll();
+    }
+
+    public List<String> getAllWareGroupsNames(){
+        return wareGroupRepository.getAllId();
     }
 }

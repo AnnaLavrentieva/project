@@ -1,46 +1,79 @@
 package com.lavrentieva.controller;
 
 //import com.lavrentieva.dto.PriceUpdate;
-import com.lavrentieva.model.Item;
-import com.lavrentieva.model.WareGroup;
-import com.lavrentieva.service.ItemService;
-import com.lavrentieva.service.PersonService;
+
+import com.lavrentieva.dto.ItemDto;
+import com.lavrentieva.serviceDto.ItemDTOService;
 import com.lavrentieva.service.WareGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jmx.export.metadata.ManagedOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/item")
 public class ItemController {
-    private final ItemService itemService;
+    private final ItemDTOService itemDTOService;
     private final WareGroupService wareGroupService;
+    private int number = 1;
 
     @Autowired
-    public ItemController(ItemService itemService, WareGroupService wareGroupService) {
-        this.itemService = itemService;
-        this.wareGroupService=wareGroupService;
+    public ItemController(ItemDTOService itemDTOService, WareGroupService wareGroupService) {
+        this.itemDTOService = itemDTOService;
+        this.wareGroupService = wareGroupService;
     }
+
     @GetMapping
-    public ModelAndView showItemForm (ModelAndView modelAndView){
-        final Item item = itemService.createForInputForm();
-        final Iterable<WareGroup> wareGroups = wareGroupService.getAll();
-        modelAndView.addObject("item",item);
-        modelAndView.addObject("wareGroups",wareGroups);
+    public ModelAndView showItemForm(ModelAndView modelAndView) {
+        final ItemDto item = new ItemDto();
+        item.setNumber(number);
+        item.setDeploymentDate(new Date());
+        item.setProductionYear(2022);
+        final List<String> wareGroups = wareGroupService.getAllWareGroupsNames();
+        modelAndView.addObject("item", item);
+        modelAndView.addObject("wareGroups", wareGroups);
         modelAndView.setViewName("itemForm");
         return modelAndView;
     }
 
     @PostMapping
-    public ModelAndView addItemToCache (@ModelAttribute ("item") Item item, ModelAndView modelAndView) {
-        itemService.addToCache(item);
-        modelAndView.setViewName("redirect:/item");
+    public ModelAndView addItemToCache(@ModelAttribute("item") ItemDto item, ModelAndView modelAndView) {
+        itemDTOService.addToCache(item);
+        number += 1;
+        modelAndView.setViewName("redirect:/item"); //подивитись потім може зручніше просто на "itemForm"
+        return modelAndView;
+    }
+
+    @GetMapping("/list")
+    public ModelAndView showCacheList(ModelAndView modelAndView) {
+        final List<ItemDto> itemsFromCache = itemDTOService.getAllFromCache();
+        final double totalSum = itemDTOService.getTotalSumFromCache();
+        modelAndView.addObject("items", itemsFromCache);
+        modelAndView.addObject("sum", totalSum);
+        modelAndView.setViewName("listItems");
+        return modelAndView;
+    }
+
+    @DeleteMapping("/list/delete/{number}")
+    public ModelAndView deleteItemFromCache(@PathVariable("number") int number, ModelAndView modelAndView) {
+        itemDTOService.deleteFromCache(number);
+        final List<ItemDto> itemsFromCache = itemDTOService.getAllFromCache();
+        modelAndView.addObject("items", itemsFromCache);
+        modelAndView.setViewName("listItems");
+        return modelAndView;
+    }
+
+    @PutMapping("/list/edit/{number}")
+    public ModelAndView editItemFromCache(@PathVariable("number") int number, ModelAndView modelAndView) {
+        final ItemDto item = itemDTOService.getFromCache(number);
+        final List<String> wareGroups = wareGroupService.getAllWareGroupsNames();
+        modelAndView.addObject("item", item);
+        modelAndView.addObject("wareGroups", wareGroups);
+        modelAndView.setViewName("itemForm");
         return modelAndView;
     }
 //

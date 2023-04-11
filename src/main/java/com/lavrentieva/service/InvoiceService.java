@@ -8,24 +8,28 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class InvoiceService {
     private final InvoiceRepository invoiceRepository;
+    private final ItemService itemService;
+    private final WareMovementRecordService wareMovementRecordService;
 
     @Autowired
-    public InvoiceService(InvoiceRepository invoiceRepository) {
+    public InvoiceService(InvoiceRepository invoiceRepository, ItemService itemService,
+                          WareMovementRecordService wareMovementRecordService) {
         this.invoiceRepository = invoiceRepository;
+        this.itemService = itemService;
+        this.wareMovementRecordService = wareMovementRecordService;
     }
 
-    @Transactional
-    public void addItemsAndSave(final Invoice invoice) {
+    @Transactional //для айтемів - в репозиторії а так можна і в сервайс
+    public void addItemsAndSave(final Invoice invoice, List<Item> itemList) {
+        invoice.setItems(itemList);
         invoiceRepository.save(invoice);
+        itemService.saveAllFromList(itemList);
+        wareMovementRecordService.createAddForItemListByArrivalAndSave(itemList);
     }
-
 
 }

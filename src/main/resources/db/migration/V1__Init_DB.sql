@@ -4,6 +4,7 @@ invoice_id varchar(255) not null,
 invoice_date date,
 invoice_number varchar(255),
 invoice_type varchar(255),
+sum float8,
 primary key (invoice_id)
 );
 

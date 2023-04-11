@@ -7,6 +7,8 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -15,11 +17,6 @@ import java.util.Set;
 @Setter
 @ToString
 public class Warehouse {
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
-//    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-//    @Column(name = "warehouse_id")
-//    private String id;
 
     @Id
     @Column(name = "warehouse_id")
@@ -28,18 +25,18 @@ public class Warehouse {
     @OneToMany(mappedBy = "warehouse", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<Ware> wares = new LinkedHashSet<>();
+    private List<Ware> wares = new LinkedList<>();
 
-    @OneToMany(mappedBy = "warehouse", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+    @OneToMany(mappedBy = "warehouse", cascade = {CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<WareMovementRecord> records = new LinkedHashSet<>();
+    private List<WareMovementRecord> records = new LinkedList<>();
 
-    public void setWares (final Set<Ware> wares){
+    public void setWares (final List<Ware> wares){
         wares.forEach(ware -> ware.setWarehouse(this));
     }
 
-    public void setRecords (Set<WareMovementRecord> records){
+    public void setRecords (final List<WareMovementRecord> records){
         records.forEach(record -> record.setWarehouse(this));
     }
 }

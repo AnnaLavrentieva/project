@@ -24,8 +24,9 @@ public class PersonController {
     }
 
     @GetMapping("/home")
-    public String home() {
-        return "menu";
+    public ModelAndView homePage(ModelAndView modelAndView) {
+        modelAndView.setViewName("menu");
+        return modelAndView;
     }
 
     @GetMapping("/admin")

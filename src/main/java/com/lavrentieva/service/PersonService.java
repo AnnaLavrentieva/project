@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +24,6 @@ public class PersonService  {
 //        this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
     public void save(final Person person) {
         personRepository.save(person);
         //перевірити навіщо String - може зробити порожнім?
@@ -40,8 +40,12 @@ public class PersonService  {
     }
 
     public Person getById(final String id) {
-        return personRepository.findById(id).get();
-//                .orElseThrow(()-> new NoSuchElementException("Person not found"));
+        return personRepository.findById(id)
+                .orElseThrow(()-> new NoSuchElementException("Person not found"));
+    }
+
+    public List<String> getAllPeopleNames(){
+        return personRepository.getAllId();
     }
 
 //    @Override

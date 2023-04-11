@@ -1,20 +1,28 @@
 package com.lavrentieva.service;
 
 import com.lavrentieva.model.Item;
+import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.repository.ItemRepository;
+import com.lavrentieva.serviceDto.ItemDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
 
+
     @Autowired
-    public ItemService(final ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository) {
         this.itemRepository = itemRepository;
     }
+
+//    public void createAndSave(final Item item){
+//        item.setPerson();
+//    }
 
     public Iterable<Item> getAll() {
         return itemRepository.findAll();
@@ -28,9 +36,9 @@ public class ItemService {
         return itemRepository.save(item).getId();
     }
 
-//    public void saveAllFromCacheToDatabase() {
-//        itemRepository.saveAll(CACHE);
-//    }
+    public void saveAllFromList(final List<Item> itemList) {
+        itemRepository.saveAll(itemList);
+    }
 
 //    public void updatePrice(final String id, final int price) {
 //        itemRepository.findById(id)

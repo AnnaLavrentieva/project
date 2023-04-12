@@ -38,13 +38,8 @@ public class Person  {
     @ToString.Exclude
     private List<WareMovementRecord> records = new LinkedList<>();
 
-    public void setWares (final List<Ware> wares){
-        wares.forEach(ware -> ware.setPerson(this));
-    }
 
-    public void setRecords (final List<WareMovementRecord> records){
-        records.forEach(record -> record.setPerson(this));
-    }
+
 
 
 

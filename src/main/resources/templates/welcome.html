@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome!</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            margin-top: 100px;
+            max-width: 400px;
+            padding: 20px;
+            border-radius: 5px;
+        }
+
+        h3 {
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        p {
+            text-align: center;
+            font-size: 1.25rem;
+        }
+
+        .btn-login {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3>Welcome!</h3>
+    <p>This is a restricted access system</p>
+    <p>If you have access, please <a th:href="@{/login}">Log in</a></p>
+    <p>If you don't, please contact the Administrator</p>
+    <p>Have a great day!</p>
+</div>
+</body>
+</html>

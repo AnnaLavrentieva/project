@@ -3,6 +3,7 @@ package com.lavrentieva.controller;
 import com.lavrentieva.model.Person;
 import com.lavrentieva.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,30 +24,21 @@ public class PersonController {
         this.personService = personService;
     }
 
+    @GetMapping
+    public ModelAndView startPage(ModelAndView modelAndView) {
+        modelAndView.setViewName("welcome");
+        return modelAndView;
+    }
+
     @GetMapping("/home")
     public ModelAndView homePage(ModelAndView modelAndView) {
         modelAndView.setViewName("menu");
         return modelAndView;
     }
 
-    @GetMapping("/admin")
-    public String showAdminActions() {
-        return "admin-panel";
-    }
-
-    @GetMapping("/manager")
-    public String showManagerActions() {
-        return "manager-panel";
-    }
-
-    @GetMapping("/analyst")
-    public String showAnalystActions() {
-        return "analyst-panel";
-    }
-
     @GetMapping("/person")
     public ModelAndView showProductForm(ModelAndView modelAndView) {
-        modelAndView.addObject("person", new Person());
+//        modelAndView.addObject("person", new Person()); переробити на дто
         modelAndView.setViewName("personView");
         return modelAndView;
     }
@@ -59,7 +51,7 @@ public class PersonController {
     }
 
     @GetMapping("/person/all")
-//    @PreAuthorize("hasAuthority('PersonRole.ADMIN')")
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ModelAndView showAll(ModelAndView modelAndView) {
         modelAndView.addObject("people", personService.getAll());
         modelAndView.setViewName("peopleView");
@@ -68,7 +60,7 @@ public class PersonController {
 
     @GetMapping("/person/{id}")
     public String showPerson(@PathVariable("id") String id, Model model) {
-        model.addAttribute("person",personService.getById(id));
+        model.addAttribute("person", personService.getById(id));
         return "personByIdView";
 //        return modelAndView;
     }
@@ -92,7 +84,7 @@ public class PersonController {
 //        return modelAndView;
 //    }
 
-//    @PatchMapping("(/person/{id}")
+//    @PutMapping("(/person/{id}")
 //    /update
 //
 //    @DeleteMapping("(/person/{id}")

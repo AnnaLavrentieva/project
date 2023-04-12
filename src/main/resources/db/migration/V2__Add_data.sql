@@ -1,5 +1,5 @@
 insert into persons (person_id,password,role)
-values ('Slava Ukraine','123','ADMIN');
+values ('Slava Ukraine','$2a$12$rK7xLwpcIDeSzy4chgps/uNBT1oZk9H48ry0qBOPIac4klV5SLajK','ADMIN');
 
 insert into warehouses (warehouse_id)
 values ('Main');

@@ -10,6 +10,7 @@ import com.lavrentieva.service.ItemService;
 import com.lavrentieva.service.WareMovementRecordService;
 import com.lavrentieva.serviceDto.ItemDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -21,6 +22,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/invoice")
+@PreAuthorize("hasAuthority('ADMIN')") //вже є у конфігурації - щоб було що копіювати )
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final ItemService itemService;

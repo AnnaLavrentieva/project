@@ -1,9 +1,7 @@
 package com.lavrentieva.service;
 
 import com.lavrentieva.model.Item;
-import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.repository.ItemRepository;
-import com.lavrentieva.serviceDto.ItemDtoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

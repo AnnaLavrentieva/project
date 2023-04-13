@@ -13,10 +13,10 @@
     <br>
     <h4>FIRST STEP: add items</h4>
     <form class="row g-3" th:action="@{/item}" th:object="${item}" method="POST">
-        <div class="col-md-2">
-            <label for="inputNumber" class="form-label">Number</label>
-            <input type="number" class="form-control" id="inputNumber" th:field="*{number}"
-                   value="${item.number}" readonly>
+        <div class="col-md-4">
+            <label for="inputId" class="form-label">Id</label>
+            <input type="text" class="form-control" id="inputId" th:field="*{id}"
+                   value="${item.id}" readonly>
         </div>
         <div class="col-md-4">
             <label for="inputName" class="form-label">Name</label>
@@ -82,8 +82,9 @@
             <input class="btn btn-outline-primary" type="submit" th:value="Submit"/>
         </div>
     </form>
-    <a th:href="@{/item/list}" class="btn btn-outline-primary"
-       role="button" onclick="window.open(this.href,'_blank');return false;">Show added items</a>
+    <div class="mt-2">
+        <a th:href="@{/item/list}" class="btn btn-outline-primary" role="button">Show added items</a>
+    </div>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"

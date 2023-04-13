@@ -4,11 +4,9 @@ import com.lavrentieva.dto.InvoiceDto;
 import com.lavrentieva.mapper.InvoiceDtoMapper;
 import com.lavrentieva.model.Invoice;
 import com.lavrentieva.model.Item;
-import com.lavrentieva.model.WareMovementRecord;
 import com.lavrentieva.service.InvoiceService;
 import com.lavrentieva.service.ItemService;
-import com.lavrentieva.service.WareMovementRecordService;
-import com.lavrentieva.serviceDto.ItemDtoService;
+import com.lavrentieva.serviceDto.ItemDtoCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
@@ -26,22 +24,22 @@ import java.util.List;
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final ItemService itemService;
-    private final ItemDtoService itemDTOService;
+    private final ItemDtoCreateService itemDTOCreateService;
     private final InvoiceDtoMapper invoiceDtoMapper;
 
     @Autowired
     public InvoiceController(InvoiceService invoiceService, ItemService itemService,
-                             ItemDtoService itemDTOService, InvoiceDtoMapper invoiceDtoMapper) {
+                             ItemDtoCreateService itemDTOCreateService, InvoiceDtoMapper invoiceDtoMapper) {
         this.invoiceService = invoiceService;
         this.itemService = itemService;
-        this.itemDTOService = itemDTOService;
+        this.itemDTOCreateService = itemDTOCreateService;
         this.invoiceDtoMapper = invoiceDtoMapper;
     }
 
     @GetMapping
     public ModelAndView showForm(ModelAndView modelAndView) {
         final InvoiceDto invoice = new InvoiceDto();
-        final double sum = itemDTOService.getTotalSumFromCache();
+        final double sum = itemDTOCreateService.getTotalSumFromCache();
         invoice.setSum(sum);
         modelAndView.addObject("invoice", invoice);
         modelAndView.setViewName("invoiceForm");
@@ -51,8 +49,9 @@ public class InvoiceController {
     public ModelAndView createAndSave(@ModelAttribute("invoice") InvoiceDto invoice,
                                       ModelAndView modelAndView) {
         final Invoice invoiceCreated = invoiceDtoMapper.mapToModelFromDTO(invoice);
-        final List<Item> itemList = itemDTOService.mapToModelInListFromDTO();
+        final List<Item> itemList = itemDTOCreateService.mapToModelInListFromDTO();
         invoiceService.addItemsAndSave(invoiceCreated,itemList);
+        itemDTOCreateService.clearCache();
         modelAndView.addObject("message", "Invoice has been saved successfully");
         modelAndView.setViewName("redirect:/home");
         return modelAndView;

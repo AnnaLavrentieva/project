@@ -1,10 +1,10 @@
 package com.lavrentieva.controller;
 
 
-import com.lavrentieva.dto.ItemDto;
+import com.lavrentieva.dto.ItemDtoCreate;
 import com.lavrentieva.service.PersonService;
 import com.lavrentieva.service.WarehouseService;
-import com.lavrentieva.serviceDto.ItemDtoService;
+import com.lavrentieva.serviceDto.ItemDtoCreateService;
 import com.lavrentieva.service.WareGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,20 +13,21 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/item")
 public class ItemController {
-    private final ItemDtoService itemDTOService;
+    private final ItemDtoCreateService itemDTOCreateService;
     private final WareGroupService wareGroupService;
     private final WarehouseService warehouseService;
     private final PersonService personService;
-    private int number = 1;
 
     @Autowired
-    public ItemController(ItemDtoService itemDTOService, WareGroupService wareGroupService,
+    public ItemController(ItemDtoCreateService itemDTOCreateService, WareGroupService wareGroupService,
                           WarehouseService warehouseService, PersonService personService) {
-        this.itemDTOService = itemDTOService;
+        this.itemDTOCreateService = itemDTOCreateService;
         this.wareGroupService = wareGroupService;
         this.warehouseService = warehouseService;
         this.personService = personService;
@@ -34,8 +35,8 @@ public class ItemController {
 
     @GetMapping
     public ModelAndView showForm(ModelAndView modelAndView) {
-        final ItemDto item = new ItemDto();
-        item.setNumber(number);
+        final ItemDtoCreate item = new ItemDtoCreate();
+        item.setId(UUID.randomUUID().toString());
         item.setDeploymentDate(new Date());
         item.setProductionYear(2022);
         final List<String> wareGroups = wareGroupService.getAllWareGroupsNames();
@@ -50,35 +51,35 @@ public class ItemController {
     }
 
     @PostMapping
-    public ModelAndView addToCache(@ModelAttribute("item") ItemDto item, ModelAndView modelAndView) {
-        itemDTOService.addToCache(item);
-        number += 1;
-        modelAndView.setViewName("redirect:/item"); //подивитись потім може зручніше просто на "itemForm"
+    public ModelAndView addToCache(@ModelAttribute("item") ItemDtoCreate item, ModelAndView modelAndView) {
+        itemDTOCreateService.addToCache(item);
+        modelAndView.setViewName("redirect:/item");
         return modelAndView;
     }
 
     @GetMapping("/list")
     public ModelAndView showCache(ModelAndView modelAndView) {
-        final List<ItemDto> itemsFromCache = itemDTOService.getAllFromCache();
-        final double totalSum = itemDTOService.getTotalSumFromCache();
+        final List<ItemDtoCreate> itemsFromCache = itemDTOCreateService.getAllFromCache();
+        final double totalSum = itemDTOCreateService.getTotalSumFromCache();
         modelAndView.addObject("items", itemsFromCache);
         modelAndView.addObject("sum", totalSum);
         modelAndView.setViewName("listItems");
         return modelAndView;
     }
 
-    @DeleteMapping("/list/delete/{number}")
-    public ModelAndView deleteFromCache(@PathVariable("number") int number, ModelAndView modelAndView) {
-        itemDTOService.deleteFromCache(number);
-        final List<ItemDto> itemsFromCache = itemDTOService.getAllFromCache();
+    @DeleteMapping("/list/delete/{id}")
+    public ModelAndView deleteFromCache(@PathVariable("id") String id, ModelAndView modelAndView) {
+        itemDTOCreateService.deleteFromCache(id);
+        final List<ItemDtoCreate> itemsFromCache = itemDTOCreateService.getAllFromCache();
         modelAndView.addObject("items", itemsFromCache);
         modelAndView.setViewName("redirect:/item/list");
         return modelAndView;
     }
 
-    @PutMapping("/list/edit/{number}")
-    public ModelAndView editInCache(@PathVariable("number") int number, ModelAndView modelAndView) {
-        final ItemDto item = itemDTOService.getFromCache(number);
+    @PutMapping("/list/edit/{id}")
+    public ModelAndView editInCache(@PathVariable("id") String id, ModelAndView modelAndView) {
+        Objects.requireNonNull(id);
+        final ItemDtoCreate item = itemDTOCreateService.getFromCache(id);
         final List<String> wareGroups = wareGroupService.getAllWareGroupsNames();
         modelAndView.addObject("item", item);
         modelAndView.addObject("wareGroups", wareGroups);

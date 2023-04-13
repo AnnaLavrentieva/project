@@ -43,9 +43,10 @@ public class SecurityConfig {
                     authorize.mvcMatchers("/home").authenticated();
                     authorize.mvcMatchers("/invoice").hasAuthority("ADMIN");
                     authorize.mvcMatchers("/recorder").hasAuthority("ADMIN"); //hasRole() має вбудований префікс "ROLE_" перед вказаною назвою ролі - НЕ ВИКОРИСТОВУЄМО!
-
+                    authorize.mvcMatchers("/item/**").authenticated();
                     authorize.mvcMatchers("/person/**").authenticated();
                     authorize.mvcMatchers("/group/**").authenticated();
+                    authorize.mvcMatchers("/movement/**").authenticated();
                 })
                 .userDetailsService(jpaUserDetailsService)
                 .headers(headers -> headers.frameOptions().sameOrigin())

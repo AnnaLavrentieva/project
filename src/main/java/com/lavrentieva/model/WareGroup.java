@@ -25,7 +25,4 @@ public class WareGroup {
             fetch = FetchType.EAGER)
     @ToString.Exclude
     private List<Ware> wares = new LinkedList<>();
-//    public void setWares (final Set<Ware> wares){
-//        wares.forEach(ware -> ware.setWareGroup(this));
-//    }
 }

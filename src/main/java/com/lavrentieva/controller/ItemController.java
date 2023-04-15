@@ -81,8 +81,12 @@ public class ItemController {
         Objects.requireNonNull(id);
         final ItemDtoCreate item = itemDTOCreateService.getFromCache(id);
         final List<String> wareGroups = wareGroupService.getAllWareGroupsNames();
+        final List<String> warehouses = warehouseService.getAllWarehousesNames();
+        final List<String> people = personService.getAllPeopleNames();
         modelAndView.addObject("item", item);
         modelAndView.addObject("wareGroups", wareGroups);
+        modelAndView.addObject("warehouses", warehouses);
+        modelAndView.addObject("people", people);
         modelAndView.setViewName("itemForm");
         return modelAndView;
     }

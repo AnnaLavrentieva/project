@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns="http://www.w3.org/1999/html">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <title>Movement</title>
+</head>
+<body>
+<div id="menu" th:insert="menu :: menu_fragment"></div>
+<div class="container">
+    <br>
+    <h4>Filter the list and chose items (set up amount for movement) </h4>
+    <form class="row g-3" th:action="@{/movement}">
+        <div class="col-md-2">
+            <label for="inputWarehouses" class="form-label">Warehouse</label>
+            <select class="form-select" name="warehouse" th:value="${warehouse}"
+                    id="inputWarehouses" aria-label="Warehouse select">
+                <option th:each="w : ${warehouses}"
+                        th:value="${w}"
+                        th:text="${w}"
+                        th:selected="${w == warehouse}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <label for="inputPerson" class="form-label">Person</label>
+            <select class="form-select" name="person" th:value="${person}"
+                    id="inputPerson" aria-label="Person select">
+                <option th:each="p : ${people}"
+                        th:value="${p}"
+                        th:text="${p}"
+                        th:selected="${p == person}">
+                </option>
+            </select>
+        </div>
+        <div class="col-md-1">
+            <label for="inputPageSize" class="form-label">Items/Page</label>
+            <select class="form-select" name="size" th:value="${pageSize}"
+                    id="inputPageSize" aria-label="Page size select">
+                <option th:each="s : ${ {3, 6, 9} }"
+                        th:value="${s}"
+                        th:text="${s}"
+                        th:selected="${s == pageSize}">
+                </option>
+            </select>
+        </div>
+        <div class="col-12">
+            <input class="btn btn-outline-primary" type="submit" value="Submit" th:value="Submit"/>
+        </div>
+    </form>
+</div>
+<div class="container">
+    <br>
+    <h4>Item List</h4>
+    <form class="row g-3" th:action="@{/movement/list}" th:object="${form}" method="POST">
+        <table class="table mt-4">
+            <thead>
+            <tr>
+                <th>id</th>
+                <th>Name</th>
+                <th>Deployment Date</th>
+                <th>Person</th>
+                <th>Warehouse</th>
+                <th>Ware Group</th>
+                <th>Amount</th>
+                <th>Amount for movement</th>
+                <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="item, itemStat : *{items}">
+                <td th:text="${item.id}"></td>
+                <td th:text="${item.name}"></td>
+                <td th:text="${#dates.format(item.deploymentDate, 'dd.MM.yyyy')}"></td>
+                <td th:text="${item.person}"></td>
+                <td th:text="${item.warehouse}"></td>
+                <td th:text="${item.wareGroup}"></td>
+                <td th:text="${item.amount}"></td>
+                <td>
+                    <input th:field="*{items[__${itemStat.index}__].amountForMovement}"
+                           type="number" th:min="0" th:max="${item.amount}"/>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-12">
+            <button type="submit" class="btn btn-md btn-primary">Move Items</button>
+        </div>
+    </form>
+    <nav aria-label="Pagination" th:if="${totalPages > 0}">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="paging :: paging(1, '<<', 'First Page')"></a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                <a th:replace="paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2
+                < totalPages ? currentPage + 2 : totalPages)}">
+                <a th:replace="paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+            </li>
+            <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                <a class="page-link" href="#">...</a>
+            </li>
+            <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                <a th:replace="paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+            </li>
+        </ul>
+    </nav>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+</body>
+</html>

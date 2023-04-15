@@ -13,7 +13,7 @@
     <table class="table mt-4">
         <thead>
         <tr>
-            <th>Number</th>
+            <th>Id</th>
             <th>Name</th>
             <th>Serial Number</th>
             <th>Inventory Number</th>
@@ -22,6 +22,8 @@
             <th>Amount</th>
             <th>Price</th>
             <th>Ware Group</th>
+            <th>Warehouse</th>
+            <th>Person</th>
             <th></th>
         </tr>
         </thead>
@@ -36,6 +38,8 @@
             <td th:text="${item.amount}"></td>
             <td th:text="${#numbers.formatDecimal(item.price, 0, 'COMMA', 2, 'POINT')}"></td>
             <td th:text="${item.wareGroup}"></td>
+            <td th:text="${item.warehouse}"></td>
+            <td th:text="${item.person}"></td>
             <td>
                 <form th:action="@{/item/list/edit/{id}(id=${item.id})}" method="POST">
                     <input type="hidden" name="_method" value="PUT">

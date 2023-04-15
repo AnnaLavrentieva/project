@@ -29,6 +29,7 @@ public class ItemDtoCreateService {
 
 
     public void addToCache(final ItemDtoCreate item) {
+        Objects.requireNonNull(item);
         final int index = getIndexFromCache(item.getId());
         if (index < 0) {
             CACHE.add(item);

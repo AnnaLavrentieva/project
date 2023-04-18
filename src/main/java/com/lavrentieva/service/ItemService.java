@@ -1,11 +1,12 @@
 package com.lavrentieva.service;
 
 import com.lavrentieva.dto.ItemDtoMovement;
+import com.lavrentieva.dto.ItemsDtoInListMovement;
 import com.lavrentieva.mapper.ItemDtoMovementMapper;
-import com.lavrentieva.model.Item;
-import com.lavrentieva.model.Person;
-import com.lavrentieva.model.Warehouse;
+import com.lavrentieva.model.*;
 import com.lavrentieva.repository.ItemRepository;
+import lombok.NonNull;
+import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,12 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
+    private WareMovementRecordService wareMovementRecordService;
 
     @Autowired
-    public ItemService(ItemRepository itemRepository) {
+    public ItemService(ItemRepository itemRepository, WareMovementRecordService wareMovementRecordService) {
         this.itemRepository = itemRepository;
+        this.wareMovementRecordService = wareMovementRecordService;
     }
 
     public List<Item> getAll() {
@@ -47,7 +50,7 @@ public class ItemService {
     public Page<Item> getPageByCondition(int page, int size, Warehouse warehouse, Person person) {
         final List<Order> ordersForSorting = setUpSortList();
         final Pageable pageable = PageRequest.of(page - 1, size, Sort.by(ordersForSorting).ascending());
-        final Page<Item> itemsPage = findPageByDifferentConditions(warehouse,person,pageable);
+        final Page<Item> itemsPage = findPageByDifferentConditions(warehouse, person, pageable);
         return itemsPage;
     }
 
@@ -76,6 +79,62 @@ public class ItemService {
         orders.add(new Order(Sort.Direction.DESC, "wareGroup"));
         return orders;
     }
+
+    public ItemsDtoInListMovement getListForMovement(@NonNull ItemsDtoInListMovement form) {
+        final List<ItemDtoMovement> itemDtoMovementList = form.getItems()
+                .stream()
+                .map(this::checkAndChangeAmount)
+                .filter(itemDto -> itemDto.getAmountForMovement() > 0)
+                .toList();
+        final ItemsDtoInListMovement formForMovement = new ItemsDtoInListMovement();
+        formForMovement.setItems(itemDtoMovementList);
+        return formForMovement;
+    }
+
+    private ItemDtoMovement checkAndChangeAmount(ItemDtoMovement itemDto) {
+        Objects.requireNonNull(itemDto.getId());
+        if (itemDto.getAmountForMovement() > itemDto.getAmount()) {
+            itemDto.setAmountForMovement(0);
+        }
+        return itemDto;
+    }
+
+    public void getAndChangeOrCreate(ItemDtoMovement itemDto, Warehouse warehouse, Person person) {
+        Optional<Item> itemOptional = itemRepository.findById(itemDto.getId());
+        final Item item = itemOptional.orElseThrow(() ->
+                new NoSuchElementException("Item with id " + itemDto.getId() + " not found"));
+        if (item.getAmount() == itemDto.getAmountForMovement()) {
+            item.setWarehouse(warehouse);
+            item.setPerson(person);
+            itemRepository.save(item);
+            wareMovementRecordService.createAndSave(item, Movement.TRANSFER);
+        } else {
+            item.setAmount(item.getAmount() - itemDto.getAmountForMovement());
+            copyFieldsCreateItemAndSave(item, warehouse, person, itemDto.getAmountForMovement());
+        }
+    }
+
+    private void copyFieldsCreateItemAndSave(final Item item, Warehouse warehouse, Person person,
+                                     int amountForMovement) {
+        final Item itemNew = new Item();
+        itemNew.setPrice(item.getPrice());
+        itemNew.setName(item.getName());
+        itemNew.setProductionYear(item.getProductionYear());
+        itemNew.setInvoice(item.getInvoice());
+        itemNew.setDeploymentDate(item.getDeploymentDate());
+        itemNew.setInventoryNumber(item.getInventoryNumber());
+        itemNew.setSerialNumber(item.getSerialNumber());
+        itemNew.setWareGroup(item.getWareGroup());
+        itemNew.setPerson(person);
+        itemNew.setWarehouse(warehouse);
+        itemNew.setAmount(amountForMovement);
+        itemRepository.save(itemNew);
+        List<WareMovementRecord> records = item.getRecords();
+        wareMovementRecordService.copyRecordsCreateAndSave(records, itemNew);
+        wareMovementRecordService.createAndSave(itemNew,Movement.TRANSFER);
+    }
+
+    //List.addAll(інша колекція)
 
 //    public void updatePrice(final String id, final int price) {
 //        itemRepository.findById(id)

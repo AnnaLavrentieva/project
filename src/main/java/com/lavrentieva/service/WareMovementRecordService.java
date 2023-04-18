@@ -4,6 +4,7 @@ import com.lavrentieva.model.Item;
 import com.lavrentieva.model.Movement;
 import com.lavrentieva.model.WareMovementRecord;
 import com.lavrentieva.repository.WareMovementRecordRepository;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,21 +20,33 @@ public class WareMovementRecordService {
         this.wareMovementRecordRepository = wareMovementRecordRepository;
     }
 
-    public void saveAllFromList (List<WareMovementRecord> records){
+    public void saveAllFromList(List<WareMovementRecord> records) {
         wareMovementRecordRepository.saveAll(records);
     }
+
     public void createAddForItemListByArrivalAndSave(final List<Item> itemList) {
-        itemList.forEach(this::createAndSaveForItemByArrival);
+        itemList.forEach(item -> createAndSave(item, Movement.ARRIVAL));
     }
 
-    private void createAndSaveForItemByArrival(final Item item) {
+    public void createAndSave(final Item item, Movement movement) {
         final WareMovementRecord record = new WareMovementRecord();
+        record.setMovement(movement);
         record.setDate(new Date());
-        record.setMovement(Movement.ARRIVAL);
         record.setPerson(item.getPerson());
         record.setWarehouse(item.getWarehouse());
         record.setWare(item);
         wareMovementRecordRepository.save(record);
     }
 
+    public void copyRecordsCreateAndSave(List<WareMovementRecord> records, Item itemNew) {
+        for (WareMovementRecord record : records) {
+            WareMovementRecord newRecord = new WareMovementRecord();
+            newRecord.setMovement(record.getMovement());
+            newRecord.setWarehouse(record.getWarehouse());
+            newRecord.setPerson(record.getPerson());
+            newRecord.setDate(record.getDate());
+            newRecord.setWare(itemNew);
+            wareMovementRecordRepository.save(record);
+        }
+    }
 }

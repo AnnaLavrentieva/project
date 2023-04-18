@@ -6,6 +6,7 @@ import com.lavrentieva.model.Invoice;
 import com.lavrentieva.model.Item;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -31,4 +32,5 @@ public class ItemDtoMovementMapper {
         itemDto.setWareGroup(item.getWareGroup().getName());
         return itemDto;
     }
+
 }

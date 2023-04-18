@@ -12,7 +12,7 @@
     <h4>Filter the list and chose items (set up amount for movement) </h4>
     <form class="row g-3" th:action="@{/movement}">
         <div class="col-md-2">
-            <label for="inputWarehouses" class="form-label">Warehouse</label>
+            <label for="inputWarehouses" class="form-label">From warehouse</label>
             <select class="form-select" name="warehouse" th:value="${warehouse}"
                     id="inputWarehouses" aria-label="Warehouse select">
                 <option th:each="w : ${warehouses}"
@@ -23,7 +23,7 @@
             </select>
         </div>
         <div class="col-md-2">
-            <label for="inputPerson" class="form-label">Person</label>
+            <label for="inputPerson" class="form-label">From person</label>
             <select class="form-select" name="person" th:value="${person}"
                     id="inputPerson" aria-label="Person select">
                 <option th:each="p : ${people}"
@@ -52,7 +52,7 @@
 <div class="container">
     <br>
     <h4>Item List</h4>
-    <form class="row g-3" th:action="@{/movement/list}" th:object="${form}" method="POST">
+    <form class="row g-3" th:action="@{/movement/list}" th:object="${form}">
         <table class="table mt-4">
             <thead>
             <tr>
@@ -78,13 +78,25 @@
                 <td th:text="${item.amount}"></td>
                 <td>
                     <input th:field="*{items[__${itemStat.index}__].amountForMovement}"
-                           type="number" th:min="0" th:max="${item.amount}"/>
+                           type="number" th:min=0 th:max=${item.amount}/>
+                </td>
+                <td>
+                    <input th:field="*{items[__${itemStat.index}__].amount}" type="hidden" th:value="${item.amount}"/>
+                    <input th:field="*{items[__${itemStat.index}__].id}" type="hidden" th:value="${item.id}"/>
+                    <input th:field="*{items[__${itemStat.index}__].name}" type="hidden" th:value="${item.name}"/>
+                    <input th:field="*{items[__${itemStat.index}__].deploymentDate}" type="hidden"
+                           th:value="${item.deploymentDate}"/>
+                    <input th:field="*{items[__${itemStat.index}__].person}" type="hidden" th:value="${item.person}"/>
+                    <input th:field="*{items[__${itemStat.index}__].warehouse}" type="hidden"
+                           th:value="${item.warehouse}"/>
+                    <input th:field="*{items[__${itemStat.index}__].wareGroup}" type="hidden"
+                           th:value="${item.wareGroup}"/>
                 </td>
             </tr>
             </tbody>
         </table>
         <div class="col-12">
-            <button type="submit" class="btn btn-md btn-primary">Move Items</button>
+            <button type="submit" class="btn btn-md btn-primary">Next</button>
         </div>
     </form>
     <nav aria-label="Pagination" th:if="${totalPages > 0}">

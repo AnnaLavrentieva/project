@@ -10,6 +10,7 @@
 <div id="menu" th:insert="menu :: menu_fragment"></div>
 <br>
 <div class="container">
+    <br>
     <h4>LAST STEP: Add Invoice</h4>
     <form class="row g-3" th:action="@{/invoice}" th:object="${invoice}" method="POST">
         <div class="col-md-3">

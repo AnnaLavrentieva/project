@@ -4,7 +4,7 @@ import com.lavrentieva.model.Item;
 import com.lavrentieva.model.Movement;
 import com.lavrentieva.model.WareMovementRecord;
 import com.lavrentieva.repository.WareMovementRecordRepository;
-import org.springframework.beans.BeanUtils;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +20,7 @@ public class WareMovementRecordService {
         this.wareMovementRecordRepository = wareMovementRecordRepository;
     }
 
-    public void saveAllFromList(List<WareMovementRecord> records) {
-        wareMovementRecordRepository.saveAll(records);
-    }
-
-    public void createAddForItemListByArrivalAndSave(final List<Item> itemList) {
+    public void createAddForItemListByArrivalAndSave(@NonNull final List<Item> itemList) {
         itemList.forEach(item -> createAndSave(item, Movement.ARRIVAL));
     }
 
@@ -46,7 +42,7 @@ public class WareMovementRecordService {
             newRecord.setPerson(record.getPerson());
             newRecord.setDate(record.getDate());
             newRecord.setWare(itemNew);
-            wareMovementRecordRepository.save(record);
+            wareMovementRecordRepository.save(newRecord);
         }
     }
 }

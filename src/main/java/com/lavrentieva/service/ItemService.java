@@ -2,17 +2,15 @@ package com.lavrentieva.service;
 
 import com.lavrentieva.dto.ItemDtoMovement;
 import com.lavrentieva.dto.ItemsDtoInListMovement;
-import com.lavrentieva.mapper.ItemDtoMovementMapper;
 import com.lavrentieva.model.*;
 import com.lavrentieva.repository.ItemRepository;
 import lombok.NonNull;
-import org.springframework.beans.BeanUtils;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -22,7 +20,7 @@ import java.util.stream.StreamSupport;
 @Service
 public class ItemService {
     private final ItemRepository itemRepository;
-    private WareMovementRecordService wareMovementRecordService;
+    private final WareMovementRecordService wareMovementRecordService;
 
     @Autowired
     public ItemService(ItemRepository itemRepository, WareMovementRecordService wareMovementRecordService) {
@@ -47,7 +45,8 @@ public class ItemService {
         itemRepository.saveAll(itemList);
     }
 
-    public Page<Item> getPageByCondition(int page, int size, Warehouse warehouse, Person person) {
+    public Page<Item> getPageByCondition(@NonNull int page, @NonNull int size,
+                                         Warehouse warehouse, Person person) {
         final List<Order> ordersForSorting = setUpSortList();
         final Pageable pageable = PageRequest.of(page - 1, size, Sort.by(ordersForSorting).ascending());
         final Page<Item> itemsPage = findPageByDifferentConditions(warehouse, person, pageable);
@@ -115,7 +114,7 @@ public class ItemService {
     }
 
     private void copyFieldsCreateItemAndSave(final Item item, Warehouse warehouse, Person person,
-                                     int amountForMovement) {
+                                             int amountForMovement) {
         final Item itemNew = new Item();
         itemNew.setPrice(item.getPrice());
         itemNew.setName(item.getName());
@@ -130,22 +129,8 @@ public class ItemService {
         itemNew.setAmount(amountForMovement);
         itemRepository.save(itemNew);
         List<WareMovementRecord> records = item.getRecords();
+        System.out.println(records);
         wareMovementRecordService.copyRecordsCreateAndSave(records, itemNew);
-        wareMovementRecordService.createAndSave(itemNew,Movement.TRANSFER);
+        wareMovementRecordService.createAndSave(itemNew, Movement.TRANSFER);
     }
-
-    //List.addAll(інша колекція)
-
-//    public void updatePrice(final String id, final int price) {
-//        itemRepository.findById(id)
-//                .ifPresent(item -> {
-//                    item.setPrice(price);
-//                    itemRepository.save(item);
-//                });
-//    }
-
-//    public String delete(final String id) {
-//        itemRepository.deleteById(id);
-//        return id;
-//    }
 }

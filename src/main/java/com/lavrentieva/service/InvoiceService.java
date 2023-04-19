@@ -3,7 +3,7 @@ package com.lavrentieva.service;
 import com.lavrentieva.model.Invoice;
 import com.lavrentieva.model.Item;
 import com.lavrentieva.repository.InvoiceRepository;
-import com.lavrentieva.repository.ItemRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,8 @@ public class InvoiceService {
         this.wareMovementRecordService = wareMovementRecordService;
     }
 
-    @Transactional //для айтемів - в репозиторії а так можна і в сервайс
-    public void addItemsAndSave(final Invoice invoice, List<Item> itemList) {
+    @Transactional
+    public void addItemsAndSave(@NonNull final Invoice invoice, @NonNull List<Item> itemList) {
         invoice.setItems(itemList);
         invoiceRepository.save(invoice);
         itemService.saveAllFromList(itemList);

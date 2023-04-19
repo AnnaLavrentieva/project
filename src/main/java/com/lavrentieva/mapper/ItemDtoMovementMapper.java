@@ -1,12 +1,7 @@
 package com.lavrentieva.mapper;
 
-import com.lavrentieva.dto.InvoiceDto;
 import com.lavrentieva.dto.ItemDtoMovement;
-import com.lavrentieva.model.Invoice;
 import com.lavrentieva.model.Item;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import org.springframework.stereotype.Component;
 
 import java.util.List;

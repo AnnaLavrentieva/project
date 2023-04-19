@@ -2,6 +2,7 @@ package com.lavrentieva.service;
 
 import com.lavrentieva.model.Person;
 import com.lavrentieva.repository.PersonRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -25,7 +25,7 @@ public class PersonService  {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public void save(final Person person) {
+    public void save(@NonNull final Person person) {
         final String encryptedPassword = passwordEncoder.encode(person.getPassword());
         person.setPassword(encryptedPassword);
         personRepository.save(person);
@@ -35,7 +35,7 @@ public class PersonService  {
         return personRepository.findAll();
     }
 
-    public Person getById(final String id) {
+    public Person getById(@NonNull final String id) {
         return personRepository.findById(id)
                 .orElseThrow(()-> new NoSuchElementException("Person not found"));
     }
@@ -44,7 +44,7 @@ public class PersonService  {
         return personRepository.getAllId();
     }
 
-    public void updateName(final String id, final String name) {
+    public void updateName(final String id, @NonNull final String name) {
         Objects.requireNonNull(id, "Empty data");
         personRepository.findById(id)
                 .ifPresent(person -> {

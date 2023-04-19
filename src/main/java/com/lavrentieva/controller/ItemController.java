@@ -8,9 +8,11 @@ import com.lavrentieva.serviceDto.ItemDtoCreateService;
 import com.lavrentieva.service.WareGroupService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.validation.Valid;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -51,9 +53,15 @@ public class ItemController {
     }
 
     @PostMapping
-    public ModelAndView addToCache(@ModelAttribute("item") ItemDtoCreate item, ModelAndView modelAndView) {
-        itemDTOCreateService.addToCache(item);
-        modelAndView.setViewName("redirect:/item");
+    public ModelAndView addToCache(@Valid @ModelAttribute("item") ItemDtoCreate item, BindingResult result,
+                                   ModelAndView modelAndView) {
+        if (result.hasErrors()) {
+            modelAndView.addObject("item", item);
+            modelAndView.setViewName("itemForm");
+        }else {
+            itemDTOCreateService.addToCache(item);
+            modelAndView.setViewName("redirect:/item");
+        }
         return modelAndView;
     }
 
@@ -69,6 +77,7 @@ public class ItemController {
 
     @DeleteMapping("/list/delete/{id}")
     public ModelAndView deleteFromCache(@PathVariable("id") String id, ModelAndView modelAndView) {
+        Objects.requireNonNull(id);
         itemDTOCreateService.deleteFromCache(id);
         final List<ItemDtoCreate> itemsFromCache = itemDTOCreateService.getAllFromCache();
         modelAndView.addObject("items", itemsFromCache);
@@ -90,34 +99,4 @@ public class ItemController {
         modelAndView.setViewName("itemForm");
         return modelAndView;
     }
-//
-//    @GetMapping
-//    public Iterable<Item> getItems() {
-//        //можна повертати DTO наприклад назва та наявність та інше
-//        return itemService.getAll();
-//    }
-//
-//    @GetMapping("/{id}")
-//    public Item getItem(@PathVariable final String id){
-//        Objects.requireNonNull(id);
-//        return itemService.getById(id).
-//                orElseThrow(()->new IllegalArgumentException("Not found item by id " + id));
-//    }
-//
-//    @PostMapping
-//    public String create (@RequestBody final Item item) {
-//        return itemService.save(item);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public void updatePrice (@RequestBody PriceUpdate priceUpdate, @PathVariable final String id) {
-//itemService.updatePrice(id,priceUpdate.getPrice());
-//    }
-//
-//@DeleteMapping
-//    public String delete(@RequestParam final String id){
-//    Objects.requireNonNull(id);
-//    return itemService.delete(id);
-//}
-//
 }

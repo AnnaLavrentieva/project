@@ -20,7 +20,10 @@
         </div>
         <div class="col-md-4">
             <label for="inputName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="inputName" th:field="*{name}">
+            <input type="text" class="form-control" id="inputName" th:field="*{name}" required>
+            <div class="valid-feedback">
+                <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}">Invalid Name</p>
+            </div>
         </div>
         <div class="col-md-3">
             <label for="inputSerialNumber" class="form-label">Serial Number</label>
@@ -41,7 +44,10 @@
         </div>
         <div class="col-md-2">
             <label for="inputAmount" class="form-label">Amount</label>
-            <input type="number" class="form-control" id="inputAmount" th:field="*{amount}">
+            <input type="number" class="form-control" id="inputAmount" th:field="*{amount}" required>
+            <div class="valid-feedback">
+                <p th:if="${#fields.hasErrors('amount')}" th:errors="*{amount}">Invalid Amount</p>
+            </div>
         </div>
         <div class="col-md-2">
             <label for="inputPrice" class="form-label">Price</label>

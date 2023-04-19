@@ -3,13 +3,10 @@ package com.lavrentieva.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "warehouses")
@@ -32,11 +29,4 @@ public class Warehouse {
     @ToString.Exclude
     private List<WareMovementRecord> records = new LinkedList<>();
 
-    public void setWares (final List<Ware> wares){
-        wares.forEach(ware -> ware.setWarehouse(this));
-    }
-
-    public void setRecords (final List<WareMovementRecord> records){
-        records.forEach(record -> record.setWarehouse(this));
-    }
 }

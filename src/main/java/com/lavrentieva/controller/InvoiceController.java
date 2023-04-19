@@ -8,7 +8,6 @@ import com.lavrentieva.service.InvoiceService;
 import com.lavrentieva.service.ItemService;
 import com.lavrentieva.serviceDto.ItemDtoCreateService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Objects;
 
 @Controller
 @RequestMapping("/invoice")
-@PreAuthorize("hasAuthority('ADMIN')") //вже є у конфігурації - щоб було що копіювати )
 public class InvoiceController {
     private final InvoiceService invoiceService;
     private final ItemService itemService;
@@ -48,6 +47,7 @@ public class InvoiceController {
     @PostMapping
     public ModelAndView createAndSave(@ModelAttribute("invoice") InvoiceDto invoice,
                                       ModelAndView modelAndView) {
+        Objects.requireNonNull(invoice);
         final Invoice invoiceCreated = invoiceDtoMapper.mapToModelFromDTO(invoice);
         final List<Item> itemList = itemDTOCreateService.mapToModelInListFromDTO();
         invoiceService.addItemsAndSave(invoiceCreated,itemList);

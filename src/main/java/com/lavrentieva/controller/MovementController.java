@@ -1,27 +1,19 @@
 package com.lavrentieva.controller;
 
-import com.lavrentieva.dto.InvoiceDto;
 import com.lavrentieva.dto.ItemDtoMovement;
 import com.lavrentieva.dto.ItemsDtoInListMovement;
-import com.lavrentieva.dto.MovementDto;
 import com.lavrentieva.mapper.ItemDtoMovementMapper;
 import com.lavrentieva.model.Item;
 import com.lavrentieva.model.Person;
-import com.lavrentieva.model.WareGroup;
 import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 @RequestMapping("/movement")
@@ -77,7 +69,7 @@ public class MovementController {
         final ItemsDtoInListMovement formForMovement = itemService.getListForMovement(form);
         final List<String> warehouses = warehouseService.getAllWarehousesNames();
         final List<String> people = personService.getAllPeopleNames();
-        modelAndView.addObject("form",formForMovement);
+        modelAndView.addObject("form", formForMovement);
         modelAndView.addObject("warehouses", warehouses);
         modelAndView.addObject("people", people);
         modelAndView.setViewName("movementList");
@@ -85,16 +77,16 @@ public class MovementController {
     }
 
     @PostMapping("/list")
-    public ModelAndView createAndSave(@RequestParam("warehouse")  String warehouse,
-                                      @RequestParam("person")  String person,
+    public ModelAndView createAndSave(@RequestParam("warehouse") String warehouse,
+                                      @RequestParam("person") String person,
                                       @ModelAttribute("form") ItemsDtoInListMovement form,
                                       ModelAndView modelAndView) {
         final Warehouse warehouseSelected = warehouseService.getById(warehouse);
         final Person personSelected = personService.getById(person);
         final List<ItemDtoMovement> itemDtoList = form.getItems();
         itemDtoList.stream()
-                        .forEach(itemDto -> itemService.getAndChangeOrCreate(itemDto,
-                                warehouseSelected,personSelected));
+                .forEach(itemDto -> itemService.getAndChangeOrCreate(itemDto,
+                        warehouseSelected, personSelected));
         modelAndView.addObject("message", "Items have been moved successfully");
         modelAndView.setViewName("redirect:/home");
         return modelAndView;

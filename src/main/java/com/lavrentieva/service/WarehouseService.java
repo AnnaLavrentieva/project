@@ -1,8 +1,8 @@
 package com.lavrentieva.service;
 
-import com.lavrentieva.model.Person;
 import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.repository.WarehouseRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class WarehouseService {
         this.warehouseRepository = warehouseRepository;
     }
 
-    public Warehouse getById(final String id) {
+    public Warehouse getById(@NonNull final String id) {
         return warehouseRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Warehouse not found"));
     }

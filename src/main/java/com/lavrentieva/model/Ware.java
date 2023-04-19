@@ -6,8 +6,6 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import java.util.*;
 
 @Entity
@@ -24,11 +22,10 @@ public abstract class Ware {
     @Column(name = "ware_id")
     private String id;
 
+
     @Column(name = "ware_name")
     private String name;
 
-//    @Positive
-//    @NotBlank
     private int amount;
 
     @Column(name = "deployment_date")

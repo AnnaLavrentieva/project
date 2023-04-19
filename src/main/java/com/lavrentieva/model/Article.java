@@ -20,6 +20,4 @@ public class Article extends Ware {
     @ToString.Exclude
     private Set<Ware> items= new LinkedHashSet<>();
 
-    public Article() {
-    }
 }

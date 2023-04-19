@@ -6,11 +6,7 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -26,11 +22,10 @@ public abstract class Ware {
     @Column(name = "ware_id")
     private String id;
 
+
     @Column(name = "ware_name")
     private String name;
 
-    @Positive
-    @NotBlank
     private int amount;
 
     @Column(name = "deployment_date")
@@ -52,8 +47,6 @@ public abstract class Ware {
     @OneToMany(mappedBy = "ware", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<WareMovementRecorder> recorders = new LinkedHashSet<>();
+    private List<WareMovementRecord> records = new LinkedList<>();
 
-    public Ware() {
-    }
 }

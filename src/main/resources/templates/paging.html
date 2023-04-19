@@ -1,0 +1,6 @@
+<a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
+   th:href="@{'/movement?' + ${person!=null && person!=''? 'person=' + person + '&' : ''}
+   + '&warehouse='+ ${warehouse} + '&page='+ ${pageNum} + '&size=' + ${pageSize}}"
+   th:title="${tooltip}" rel="tooltip" xmlns:th="http://www.w3.org/1999/xhtml">
+    [[${label}]]
+</a>

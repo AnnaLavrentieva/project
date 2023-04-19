@@ -2,61 +2,49 @@ package com.lavrentieva.service;
 
 import com.lavrentieva.model.Person;
 import com.lavrentieva.repository.PersonRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
-//implements UserDetailsService
+
 @Service
 public class PersonService  {
     private final PersonRepository personRepository;
 
-//    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, BCryptPasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
-//        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
-    public void save(final Person person) {
+    public void save(@NonNull final Person person) {
+        final String encryptedPassword = passwordEncoder.encode(person.getPassword());
+        person.setPassword(encryptedPassword);
         personRepository.save(person);
-        //перевірити навіщо String - може зробити порожнім?
     }
-//    public String save(final Person person) {
-//        final String encryptedPassword = passwordEncoder.encode(person.getPassword());
-//        person.setPassword(encryptedPassword);
-//        return "person added to system";
-//        //перевірити навіщо String - може зробити порожнім?
-//    }
 
     public Iterable<Person> getAll() {
         return personRepository.findAll();
     }
 
-    public Person getById(final String id) {
-        return personRepository.findById(id).get();
-//                .orElseThrow(()-> new NoSuchElementException("Person not found"));
+    public Person getById(@NonNull final String id) {
+        return personRepository.findById(id)
+                .orElseThrow(()-> new NoSuchElementException("Person not found"));
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return personRepository.getByNameIgnoreCase(username)
-//                .orElseThrow(()-> new UsernameNotFoundException("Person not found"));
-//    }
+    public List<String> getAllPeopleNames(){
+        return personRepository.getAllId();
+    }
 
-    //    private static class UserInputException extends RuntimeException {
-//        private UserInputException(String message) {
-//            super(message);
-//        }
-//    }
-
-    public void updateName(final String id, final String name) {
+    public void updateName(final String id, @NonNull final String name) {
         Objects.requireNonNull(id, "Empty data");
         personRepository.findById(id)
                 .ifPresent(person -> {

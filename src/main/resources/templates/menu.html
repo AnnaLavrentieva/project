@@ -23,8 +23,6 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0 top-menu">
-                    <!--                <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
-                    <!--                me-auto відповідає за те де кнопки будуть + padding - дивись закладку utiles-spaicing boot strap-->
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" th:href="@{/home}">Home</a>
                     </li>
@@ -38,8 +36,20 @@
                     <li class="nav-item">
                         <a class="nav-link" th:href="@{/movement}">Movement</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Analysis</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" role="button"
+                           data-bs-toggle="dropdown" aria-expanded="false">
+                            Analysis
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                            <li><a class="dropdown-item" th:href="@{/analysis/item}">Item</a></li>
+                            <li><a class="dropdown-item" th:href="@{/analysis/invoice}">Invoice</a></li>
+                            <li><a class="dropdown-item" th:href="@{/analysis/movement-record}">
+                                Movement record</a></li>
+                            <li><a class="dropdown-item" th:href="@{/analysis/person}">Person</a></li>
+                            <li><a class="dropdown-item" th:href="@{/analysis/warehouse}">Warehouse</a></li>
+                            <li><a class="dropdown-item" th:href="@{/analysis/ware-Group}">Ware group</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>

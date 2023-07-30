@@ -13,14 +13,14 @@ import java.util.Date;
 @Getter
 @Setter
 @ToString
-public class WareMovementRecorder {
+public class WareMovementRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
     @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
-    @Column(name = "recorder_id")
+    @Column(name = "record_id")
     private String id;
 
-    @Column(name = "recorder_date")
+    @Column(name = "record_date")
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
@@ -39,6 +39,4 @@ public class WareMovementRecorder {
     @JoinColumn(name = "warehouse_id")
     private Warehouse warehouse;
 
-    public WareMovementRecorder() {
-    }
 }

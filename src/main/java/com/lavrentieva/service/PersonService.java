@@ -1,62 +1,59 @@
 package com.lavrentieva.service;
 
+import com.lavrentieva.dto.AnalysisDtoItemsByPerson;
+import com.lavrentieva.dto.AnalysisDtoItemsByPersonItemize;
+import com.lavrentieva.model.Item;
 import com.lavrentieva.model.Person;
+import com.lavrentieva.model.Warehouse;
 import com.lavrentieva.repository.PersonRepository;
+import lombok.NonNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 
-//implements UserDetailsService
+
 @Service
-public class PersonService  {
+public class PersonService {
     private final PersonRepository personRepository;
 
-//    private final BCryptPasswordEncoder passwordEncoder;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
-    public PersonService(PersonRepository personRepository) {
+    public PersonService(PersonRepository personRepository, BCryptPasswordEncoder passwordEncoder) {
         this.personRepository = personRepository;
-//        this.passwordEncoder = passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
-    public void save(final Person person) {
+    public void save(@NonNull final Person person) {
+        final String encryptedPassword = passwordEncoder.encode(person.getPassword());
+        person.setPassword(encryptedPassword);
         personRepository.save(person);
-        //перевірити навіщо String - може зробити порожнім?
     }
-//    public String save(final Person person) {
-//        final String encryptedPassword = passwordEncoder.encode(person.getPassword());
-//        person.setPassword(encryptedPassword);
-//        return "person added to system";
-//        //перевірити навіщо String - може зробити порожнім?
-//    }
 
     public Iterable<Person> getAll() {
         return personRepository.findAll();
     }
 
-    public Person getById(final String id) {
-        return personRepository.findById(id).get();
-//                .orElseThrow(()-> new NoSuchElementException("Person not found"));
+    public Person getById(@NonNull final String id) {
+        return personRepository.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("Person not found"));
     }
 
-//    @Override
-//    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        return personRepository.getByNameIgnoreCase(username)
-//                .orElseThrow(()-> new UsernameNotFoundException("Person not found"));
-//    }
+    public List<String> getAllPeopleNames() {
+        return personRepository.getAllId();
+    }
 
-    //    private static class UserInputException extends RuntimeException {
-//        private UserInputException(String message) {
-//            super(message);
-//        }
-//    }
-
-    public void updateName(final String id, final String name) {
+    public void updateName(final String id, @NonNull final String name) {
         Objects.requireNonNull(id, "Empty data");
         personRepository.findById(id)
                 .ifPresent(person -> {
@@ -70,4 +67,26 @@ public class PersonService  {
         Objects.requireNonNull(name, "Empty data");
         personRepository.deleteByNameIgnoreCase(name);
     }
+
+    public Page<AnalysisDtoItemsByPerson> getItemsByPerson(@NonNull int page, @NonNull int size,
+                                                           String keyword) {
+        final Pageable pageable = PageRequest.of(page - 1, size);
+        return personRepository.getAnalysisDtoItemsByPerson(keyword, pageable);
+    }
+
+    public Page<AnalysisDtoItemsByPersonItemize> findItemsByPersonId(@NonNull int page, @NonNull int size,
+                                                                     String id) {
+        final List<Sort.Order> ordersForSorting = setUpSortList();
+        final Pageable pageable = PageRequest.of(page - 1, size, Sort.by(ordersForSorting));
+        return personRepository.findPersonItemsByPersonId(id, pageable);
+    }
+
+    private List<Sort.Order> setUpSortList() {
+        List<Sort.Order> orders = new ArrayList<Sort.Order>();
+        orders.add(new Sort.Order(Sort.Direction.DESC, "warehouseName"));
+        orders.add(new Sort.Order(Sort.Direction.DESC, "wareGroupName"));
+        orders.add(new Sort.Order(Sort.Direction.ASC, "deploymentDate"));
+        return orders;
+    }
+
 }

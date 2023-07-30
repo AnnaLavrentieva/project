@@ -6,11 +6,9 @@ import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
-    @Entity
+@Entity
     @Table(name = "invoices")
     @Getter
     @Setter
@@ -29,17 +27,19 @@ import java.util.Set;
         @Temporal(TemporalType.DATE)
         private Date invoiceDate;
 
-        @Column(name = "posting_date")
-        @Temporal(TemporalType.DATE)
-        private Date postingDate;
-
         @Column(name = "invoice_type")
         @Enumerated(EnumType.STRING)
         private InvoiceType invoiceType;
 
+        private double sum;
+
         @OneToMany(mappedBy = "invoice", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
                 fetch = FetchType.EAGER)
         @ToString.Exclude
-        private Set<Item> items = new LinkedHashSet<>();
+        private List<Item> items = new LinkedList<>();
+
+        public void setItems (final List<Item> items){
+            items.forEach(item -> item.setInvoice(this));
+        }
 
     }

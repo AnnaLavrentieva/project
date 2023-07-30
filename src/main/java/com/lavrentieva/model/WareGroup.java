@@ -3,11 +3,10 @@ package com.lavrentieva.model;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 @Entity
 @Table(name = "ware_groups")
@@ -16,19 +15,11 @@ import java.util.Set;
 @ToString
 public class WareGroup {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "UUID")
-    @GenericGenerator(name = "UUID", strategy = "org.hibernate.id.UUIDGenerator")
     @Column(name = "group_id")
-    private String id;
-
-    @Column(name = "group_name")
     private String name;
 
     @OneToMany(mappedBy = "wareGroup", cascade = {CascadeType.PERSIST, CascadeType.MERGE},
             fetch = FetchType.EAGER)
     @ToString.Exclude
-    private Set<Ware> wares = new LinkedHashSet<>();
-
-    public WareGroup() {
-    }
+    private List<Ware> wares = new LinkedList<>();
 }
